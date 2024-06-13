@@ -1,6 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
+
+.concert-one-regular {
+  font-family: "Concert One";
+  font-weight: 400;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -24,4 +33,6 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  background: url('/images/pexels-annpoan-caderno.jpg') center/cover no-repeat;
+  background-attachment: fixed;
 }
