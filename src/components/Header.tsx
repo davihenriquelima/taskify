@@ -48,12 +48,12 @@ export const Header = () => {
           <nav>
             <ul className="flex flex-col text-emerald-300">
               {!userLogged &&
-                <li className="p-2 cursor-pointer">Entre ou cadastre-se</li>
+                <li className="p-2 cursor-pointer hover:font-bold">Entre ou cadastre-se</li>
               }
-              <li className="p-2 cursor-pointer">Notificações</li>
-              <li className="p-2 cursor-pointer">Suporte</li>
+              <li className="p-2 cursor-pointer hover:font-bold">Notificações</li>
+              <li className="p-2 cursor-pointer hover:font-bold">Suporte</li>
               {userLogged &&
-                <li className="p-1 cursor-pointer text-red-700">logout</li>
+                <li className="p-2 cursor-pointer font-semibold text-red-800 hover:underline">logout</li>
               }
               
             </ul>

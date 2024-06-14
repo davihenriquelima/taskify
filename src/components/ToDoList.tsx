@@ -95,7 +95,7 @@ const handleKeyDown = (id: number, event: React.KeyboardEvent<HTMLElement>) => {
                         if(itemEditing !== item.id) {
                           setItemEditing(item.id)
                         } else {
-                          const text = document.querySelector(`.editable`)?.innerHTML || item.text;
+                          const text = document.querySelector(`.editable`)?.innerHTML || '';
                           handleEdit(item.id, text);
                         }
                       }} 
