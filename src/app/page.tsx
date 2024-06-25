@@ -3,15 +3,19 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ToDoList } from "@/components/ToDoList";
+import { ListProvider } from "@/contexts/ListContext";
 
 const Page = () => {
+  
   return (
     <div className="container min-h-screen m-auto ">
 
       <Header/>
 
       <section className="flex-1 h-screen bg-gradient-to-r from-teal-700/90 to-emerald-400/90 p-6 flex justify-center" >
-        <ToDoList />
+        <ListProvider>
+          <ToDoList />
+        </ListProvider>
       </section>
 
       <section className="flex-1 min-h-screen flex md:flex-row bg-white items-center px-6 relative">
@@ -48,3 +52,5 @@ const Page = () => {
 }
 
 export default Page;
+
+//integrar API de idiomas

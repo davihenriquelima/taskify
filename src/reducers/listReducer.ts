@@ -1,4 +1,4 @@
-import { Item } from "@/types/Item";
+import { ItemList } from "@/types/ItemList";
 
 type AddAction = {
     type:'add';
@@ -31,7 +31,7 @@ type RemoveAction = {
 
 type ListAction = AddAction | RemoveAction | ToggleAction | EditAction;
 
-export const listReducer = (list:Item[], action:ListAction) : Item[]=> {
+export const listReducer = (list:ItemList[], action:ListAction) : ItemList[]=> {
     switch(action.type) {
         case 'add':
             const idItem = list.length > 0 ? list[list.length - 1].id + 1 : 0;
@@ -43,7 +43,7 @@ export const listReducer = (list:Item[], action:ListAction) : Item[]=> {
         case 'edit':
             return list.map(item => {
                 if(item.id === action.payload.id) {
-                    item.text = action.payload.newText;
+                    return {...item, text: action.payload.newText};
                 }
                 return item;
             });
