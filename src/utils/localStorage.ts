@@ -9,10 +9,10 @@ export const loadEditingItemLS = () => {
     return {
         savedEditingItem: editingItem ? Number(editingItem) : null,
         savedEditingText: editingText ? JSON.parse(editingText) : ''
-    }
-}
+    };
+};
 
 export const removeEditingItemLS = () => {
     localStorage.removeItem('itemEditing');
     localStorage.removeItem('editingText');
-};
+};  

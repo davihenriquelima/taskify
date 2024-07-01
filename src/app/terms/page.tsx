@@ -1,14 +1,19 @@
+"use client";
+
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HomeButton } from "@/components/HomeButton";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 
-const TermsAndPrivacyPage = () => {
+const ContentTermsPage = () => {
+  const themeCtx = useTheme();
+
   return (
     <div className="container min-h-screen m-auto">
       <Header />
-      <section className="flex-1 min-h-screen p-6 flex flex-col bg-white">
+      <section className={`flex-1 min-h-screen p-6 flex flex-col ${themeCtx.theme === 'light' ? 'bg-white text-black': 'bg-zinc-700 text-white'}`}>
         <HomeButton/>
-        <h1 className="text-5xl my-5 m-auto">Termos de Uso e Serviço e Política de Privacidade</h1>
+        <h1 className="text-5xl my-5">Termos de Uso e Serviço e Política de Privacidade</h1>
         <div className="rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-4">Termos de Uso e Serviço</h1>
 
@@ -119,4 +124,13 @@ const TermsAndPrivacyPage = () => {
   );
 }
 
-export default TermsAndPrivacyPage;
+const TermsPage = () => {
+
+  return (
+    <ThemeProvider>
+      <ContentTermsPage/>
+    </ThemeProvider>
+  )
+}
+
+export default TermsPage;

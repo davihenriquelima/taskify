@@ -1,13 +1,19 @@
+"use client"
+
+
 import { useListCtx } from "@/contexts/ListContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { saveEditingItemLS, removeEditingItemLS } from "@/utils/localStorage";
 import { useState } from "react";
 
 const ItensListing = () => {
 
   const listCtx = useListCtx();
   const [itemEditing, setItemEditing] = useState < number | null> (null);
+  const themeCtx = useTheme();
 
   if (!listCtx) {
-    return <div>Loading...  </div>
+    return <div>Loading... </div>
   }
 
   return (
@@ -31,18 +37,20 @@ const ItensListing = () => {
                 {item.text}
               </p>
               <div className="flex gap-4">
-                <img src={`/images/${itemEditing === item.id ? 'confirm' : 'edit'}.png`} className="w-4 cursor-pointer hover:invert hover:scale-105"
+                <img src={`/images/${itemEditing === item.id ? 'confirm' : 'edit'}.png`} className={`w-4 cursor-pointer hover:scale-125 ${themeCtx.theme === 'dark'? 'invert' : ''}`}
                   onClick={()=> {
                     if(itemEditing !== item.id) {
+                      saveEditingItemLS(item.id, item.text);
                       setItemEditing(item.id)
                     } else {
                       const text = document.querySelector(`.editable`)?.innerHTML || '';
                       listCtx.editItem(item.id, text);
-                      setItemEditing(null);
+                      removeEditingItemLS();
+                      setItemEditing(null); 
                     }
                   }}
                 />
-                <img src="/images/remove.png" className="w-4 cursor-pointer hover:invert hover:scale-105" onClick={()=>listCtx.removeItem(item.id)} />
+                <img src="/images/remove.png" className={`w-4 cursor-pointer hover:scale-125 ${themeCtx.theme === 'dark'? 'invert' : ''}`} onClick={()=>listCtx.removeItem(item.id)} />
               </div>
             </li> 
           </div>
@@ -52,5 +60,6 @@ const ItensListing = () => {
     </>
   );
 };
+
 
 export default ItensListing;

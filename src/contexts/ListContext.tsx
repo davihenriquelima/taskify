@@ -1,6 +1,7 @@
 import { listReducer } from "@/reducers/listReducer";
 import { ItemList } from "@/types/ItemList";
-import { createContext, ReactNode, useContext, useReducer } from "react";
+import { createContext, ReactNode, useContext, useReducer, useEffect } from "react";
+import { saveEditingItemLS, loadEditingItemLS, removeEditingItemLS } from "@/utils/localStorage";
 
 type ListContextType = {
     list: ItemList[];
@@ -36,10 +37,12 @@ export const ListProvider = ({children}:{children:ReactNode})=> {
         dispatch({
             type:'edit',
             payload: {
-            id:id,
-            newText:text.trim()
+                id:id,
+                newText:text.trim()
             }
         });
+
+        removeEditingItemLS();
     };
       
     const toggleItem = (id:number) => {
@@ -68,6 +71,16 @@ export const ListProvider = ({children}:{children:ReactNode})=> {
           onFinish();
         }
     };
+
+    useEffect(()=> {
+        const { savedEditingItem, savedEditingText } = loadEditingItemLS();
+        if(savedEditingItem) {
+            const item = list.find(item => item.id === savedEditingItem);
+            if(item){ 
+                item.text = savedEditingText;
+            }
+        }
+    },[])
 
     return (
         <ListContext.Provider value={{list, addItem, editItem, toggleItem, removeItem, handleKeyDown}}>
