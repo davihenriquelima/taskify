@@ -76,3 +76,20 @@ body::before {
   --background-start-rgb: 0, 0, 0;
   --background-end-rgb: 0, 0, 0;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-checkbox {
+  @apply appearance-none w-6 h-6 border border-gray-300 rounded-md bg-white/50 cursor-pointer relative p-1;
+}
+
+.custom-checkbox:checked {
+  @apply bg-teal-800 border-teal-700;
+}
+
+.custom-checkbox:checked::before {
+  content: "✓";
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-2xl;
+}

@@ -1,5 +1,6 @@
 export type ItemList = {
     id:number,
-    text:string,
+    title:string,
+    desc:string,
     done:boolean
 }

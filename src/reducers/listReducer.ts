@@ -3,7 +3,7 @@ import { ItemList } from "@/types/ItemList";
 type AddAction = {
     type:'add';
     payload: {
-        text:string;
+        id:number;
     }
 }
 
@@ -18,7 +18,8 @@ type EditAction = {
     type:'edit'
     payload:{
         id:number;
-        newText:string;
+        title:string;
+        desc:string
     }
 }
 
@@ -34,16 +35,19 @@ type ListAction = AddAction | RemoveAction | ToggleAction | EditAction;
 export const listReducer = (list:ItemList[], action:ListAction) : ItemList[]=> {
     switch(action.type) {
         case 'add':
-            const idItem = list.length > 0 ? list[list.length - 1].id + 1 : 0;
             return [...list, {
-                id:idItem,
-                text:action.payload.text,
+                id:action.payload.id,
+                title:"",
+                desc:"",
                 done:false
             }];
         case 'edit':
             return list.map(item => {
                 if(item.id === action.payload.id) {
-                    return {...item, text: action.payload.newText};
+                    return {...item, 
+                        title: action.payload.title,
+                        desc:action.payload.desc
+                    };
                 }
                 return item;
             });
