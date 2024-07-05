@@ -1,12 +1,17 @@
+"use client"
+
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HomeButton } from "@/components/HomeButton";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 
-const FAQPage = () => {
+const ContentFaqPage = () => {
+  const themeCtx = useTheme();
+
   return (
     <div className="container min-h-screen m-auto">
       <Header />
-      <section className="flex-1 h-screen p-6 flex flex-col bg-white">
+      <section className={`flex-1 h-screen p-6 flex flex-col ${themeCtx.theme === 'light'? 'bg-white text-black': 'bg-zinc-800 text-white'}`}>
         <HomeButton/>
         <div className="flex flex-col p-4">
           <h2 className="text-2xl font-bold mb-4">Perguntas Frequentes</h2>
@@ -37,4 +42,13 @@ const FAQPage = () => {
   );
 }
 
-export default FAQPage;
+const FaqPage = () => {
+
+  return (
+    <ThemeProvider>
+      <ContentFaqPage/>
+    </ThemeProvider>
+  )
+}
+
+export default FaqPage;

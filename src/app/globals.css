@@ -10,6 +10,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+
+//Tema Sistema
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -25,6 +28,7 @@
   }
 }
 
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -33,6 +37,59 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+*/
+
+body {
+  position: relative;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  ) rgb(var(--background-start-rgb));
+  z-index: 0;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: url('/images/pexels-annpoan-caderno.jpg') center/cover no-repeat;
   background-attachment: fixed;
+  opacity: 0.3; /* Ajuste a opacidade conforme necessário */
+  z-index: -1;
+  pointer-events: none;
+}
+
+.light {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 200, 200, 200;
+  --background-end-rgb: 150,150,150;
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-checkbox {
+  @apply appearance-none w-6 h-6 border border-gray-300 rounded-md bg-white/50 cursor-pointer relative p-1;
+}
+
+.custom-checkbox:checked {
+  @apply bg-teal-800 border-teal-700;
+}
+
+.custom-checkbox:checked::before {
+  content: "✓";
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-2xl;
 }

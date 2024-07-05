@@ -1,12 +1,18 @@
+"use client"
+
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HomeButton } from "@/components/HomeButton";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 
-const CreditsPage = () => {
+const ContentCreditsPage = () => {
+  const themeCtx = useTheme();
+
   return (
+  
     <div className="container min-h-screen m-auto">
       <Header />
-      <section className="flex-1 h-screen p-6 flex flex-col bg-white">
+      <section className={`flex-1 h-screen p-6 flex flex-col ${themeCtx.theme === 'dark' ? 'bg-zinc-800 text-white':'bg-white text-black'}`}>
         <HomeButton/>
         <div className="flex flex-col p-4">
           <h2 className="text-2xl font-bold mb-4">Créditos</h2>
@@ -19,7 +25,7 @@ const CreditsPage = () => {
             </ul>
           </p>
           <p className="my-4">
-            <h2>Pexels:</h2> 
+            <h2>Pexels:</h2>
             <ul className="pl-6">
               <li><a href="https://www.pexels.com/pt-br/@annpoan/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-800">Ann Poan</a> (corpo de fundo)</li>
             </ul>
@@ -35,7 +41,17 @@ const CreditsPage = () => {
       </section>
       <Footer />
     </div>
+    
   );
 }
+
+const CreditsPage = () => {
+  return (
+    <ThemeProvider>
+      <ContentCreditsPage/>
+    </ThemeProvider>
+  )
+}
+
 
 export default CreditsPage;

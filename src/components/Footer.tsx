@@ -1,12 +1,17 @@
+"use client";
+
+import { useTheme } from "@/contexts/ThemeContext"
 import Link from "next/link"
 
 export const Footer = () => {
+  const themeCtx = useTheme();
+  
   return (
     <>
-      <footer className="bg-green-300 bg-opacity-70 text-black p-4 flex  items-center gap-4">
+      <footer className={`${themeCtx.theme === 'light' ? 'bg-opacity-80 bg-green-300 text-black': 'bg-zinc-900  text-emerald-500'}  p-4 flex items-center gap-4`}>
         
         <nav className="flex flex-[0.33] w-full items-center gap-4">
-          <ul className="flex flex-col text-emerald-900">
+          <ul className="flex flex-col text-emerald-800">
             <Link href="/about">
               <li className="p-1">Sobre</li>
             </Link>
@@ -17,7 +22,7 @@ export const Footer = () => {
               <li className="p-1">FAQ</li>
             </Link>
           </ul>
-          <ul className="flex flex-col text-emerald-900">
+          <ul className="flex flex-col text-emerald-800">
             <Link href="/feedback">
               <li className=" p-1">Feedback</li>
             </Link>
@@ -29,7 +34,7 @@ export const Footer = () => {
             </Link>
           </ul>
         </nav>
-        <span className="flex-[0.33] text-center text-sm text-black/70">&copy; 2024 Taskify</span>
+        <span className="flex-[0.33] text-center text-sm">&copy; 2024 Taskify</span>
     </footer>
     </>
   )

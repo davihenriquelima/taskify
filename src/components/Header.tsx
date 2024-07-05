@@ -1,15 +1,17 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
+import { useTheme } from '../contexts/ThemeContext';
 
 export const Header = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const [openMenuLang, setOpenMenuLang] = useState(false);
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [userLogged, setUserLogged] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
-  return (
-    <header className="h-20 bg-gradient-to-r from-teal-700 to-emerald-400 p-4 flex justify-between border-b border-b-black/5">
+  return (  
+    <header className={`h-20 p-4 flex justify-between border-b border-b-black/5 ${theme === 'light' ? 'bg-gradient-to-r from-teal-700 to-emerald-400' : 'bg-gradient-to-r from-teal-950 to-gray-950'}`}>
       <div className="h-full flex flex-1 justify-center items-start flex-col relative">
         <img src="images/flaticon-menu-hamburguer.png" alt="" className="h-12 cursor-pointer hover:scale-95" onClick={()=>{setOpenMenu(!openMenu)}}/>
         {openMenu && 
@@ -29,7 +31,8 @@ export const Header = () => {
       </div>
       <p className="flex-1 p-2 mb-2 text-3xl text-white font-bold flex justify-center text">Taskify</p>
       <div className="h-full flex-1 flex justify-end gap-2 relative">
-        <img src="images/pngwing-idioma.png" className="h-12 cursor-pointer hover:brightness-0" onClick={()=> setOpenMenuLang(!openMenuLang)}/>
+        <img src="images/pngtreedark-mode-icon-light.png" alt="dark/light mode" className={`h-12 cursor-pointer hover:brightness-0 ${theme === 'dark'? 'invert':''}`} onClick={toggleTheme}/>
+        <img src="images/pngwing-idioma.png" className={`h-12 cursor-pointer hover:brightness-0 ${theme === 'dark'? 'invert':''}`} onClick={()=> setOpenMenuLang(!openMenuLang)} alt="idioma"/>
         {openMenuLang && 
           <div className={`absolute bg-white w-40 top-full right-0 p-2 rounded-md transition-all duration-300 ease-in-out transform ${openMenuLang ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
           <nav>
@@ -41,7 +44,7 @@ export const Header = () => {
           </nav>
           </div>
         }
-        <img src="images/userIcon.png" className="h-12 cursor-pointer hover:brightness-0" onClick={()=> setOpenUserMenu(!openUserMenu)}
+        <img src="images/userIcon.png" className={`h-12 cursor-pointer hover:brightness-0 ${theme === 'dark'? 'invert':''}`} onClick={()=> setOpenUserMenu(!openUserMenu)}
         />
         {openUserMenu && 
           <div className={`absolute bg-gray-500 w-40 top-full right-0 p-2 rounded-md transition-all duration-300 ease-in-out transform ${openUserMenu ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
