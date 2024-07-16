@@ -2,7 +2,7 @@
 
 import { useListCtx } from "@/contexts/ListContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import { saveEditingItemLS, removeEditingItemLS } from "@/utils/localStorage";
+import { saveEditingItemLS, removeEditingItemLS } from "@/utils/local-storage/editingItemStorage";
 
 const ItensListing = () => {
 
