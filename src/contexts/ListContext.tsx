@@ -3,7 +3,7 @@
 import { listReducer } from "@/reducers/listReducer";
 import { ItemList } from "@/types/ItemList";
 import { createContext, ReactNode, useContext, useReducer, useEffect, useState } from "react";
-import { saveEditingItemLS, loadEditingItemLS, removeEditingItemLS } from "@/utils/localStorage";
+import { saveEditingItemLS, loadEditingItemLS, removeEditingItemLS } from "@/utils/local-storage/editingItemStorage";
 
 type ListContextType = {
     list: ItemList[];
