@@ -56,7 +56,7 @@ export const getWeather = async (lat: number, lon: number, lang: string) => {
                 precipitationProbability: precipitationProbability
             };
         });
-        
+            
         return {
             currentWeather: currentWeather.data,
             rainForecast: rainData
