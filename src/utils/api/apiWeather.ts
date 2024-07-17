@@ -41,12 +41,22 @@ export const getWeather = async (lat: number, lon: number, lang: string) => {
         rainVolume: forecast.rain ? forecast.rain['3h'] : 0: O volume de chuva previsto em milímetros para as próximas 3 horas. Se forecast.rain existir, pegamos o valor de forecast.rain['3h']. Se não existir, assumimos que o volume de chuva é 0.
         precipitationProbability: forecast.pop * 100: A probabilidade de precipitação (expressa como um valor entre 0 e 1) multiplicada por 100 para obter um valor em porcentagem. 
         */
-        const rainData = todayForecasts.map((forecast: any) => ({
-            time: forecast.dt_txt,
-            rainVolume: forecast.rain ? forecast.rain['3h'] : 'sem dados',
-            precipitationProbability: forecast.pop * 100
-        }));
-
+        const rainData = todayForecasts.map((forecast: any) => {
+            const rainVolume = forecast.rain && forecast.rain['3h'] !== undefined ? forecast.rain['3h'] : 'sem dados';
+            const precipitationProbability = forecast.pop !== undefined ? forecast.pop * 100 : 0;
+        
+            console.log(`Forecast time: ${forecast.dt_txt}`);
+            console.log(`Full forecast object: `, forecast);
+            console.log(`Rain Volume: ${rainVolume}`);
+            console.log(`Precipitation Probability: ${precipitationProbability}%`);
+        
+            return {
+                time: forecast.dt_txt,
+                rainVolume: rainVolume,
+                precipitationProbability: precipitationProbability
+            };
+        });
+        
         return {
             currentWeather: currentWeather.data,
             rainForecast: rainData
