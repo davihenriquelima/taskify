@@ -15,7 +15,6 @@ export const getWeather = async (lat: number, lon: number, lang: string) => {
                 lang: lang
             }
         });
-
         const rainForecast = await axios.get(forecastWeatherUrl, {
             params: {
                 lat,
@@ -25,43 +24,41 @@ export const getWeather = async (lat: number, lon: number, lang: string) => {
                 lang: lang
             }
         });
+    
+        /*a linha new Date().toLocaleString... cria uma string no GMT de Sao Paulo representando a data 
+        e hora atual*/
+        const currentDateTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+        const currentDate = currentDateTime.split(',')[0].trim(); // pega apenas a data em currentDateTime
+        const currentHour = currentDateTime.split(',')[1].trim().split(':')[0]; // Pega apenas a hora
 
-        /*a linha new Date().toISOString() cria uma string no formato ISO representando a data 
-        e hora atual, divide a string entre T's e forma uma array com cada item entre eles*/
-        const today = new Date().toISOString().split('T')[0];
-
-        /*rainForecast.data.list é uma lista de previsões de 3 horas.
-        .filter((forecast: any) => forecast.dt_txt.startsWith(today)) filtra essa lista para incluir apenas previsões onde a data (forecast.dt_txt) começa com a data de hoje (today). forecast.dt_txt é uma string no formato "YYYY-MM-DD HH:mm", então startsWith(today) verifica se a previsão é para hoje
-        */
-        const todayForecasts = rainForecast.data.list.filter((forecast: any) => forecast.dt_txt.startsWith(today));
-
-        /* todayForecasts.map((forecast: any) => ({ ... })) percorre cada previsão filtrada para hoje 
-        e cria um novo array de objetos contendo:
-        time: forecast.dt_txt: A hora da previsão.
-        rainVolume: forecast.rain ? forecast.rain['3h'] : 0: O volume de chuva previsto em milímetros para as próximas 3 horas. Se forecast.rain existir, pegamos o valor de forecast.rain['3h']. Se não existir, assumimos que o volume de chuva é 0.
-        precipitationProbability: forecast.pop * 100: A probabilidade de precipitação (expressa como um valor entre 0 e 1) multiplicada por 100 para obter um valor em porcentagem. 
-        */
-        const rainData = todayForecasts.map((forecast: any) => {
-            const rainVolume = forecast.rain && forecast.rain['3h'] !== undefined ? forecast.rain['3h'] : 'sem dados';
+        const rainData = rainForecast.data.list.map((forecast: any) => {
+            const forecastDateTime = new Date(forecast.dt_txt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+            const forecastDate = forecastDateTime.split(',')[0].trim(); // apenas a data na string do horário da previsão
+            const forecastHour = forecastDateTime.split(',')[1].trim().substring(0, 5); // substring pega os primeiros 5 caracteres do horário
             const precipitationProbability = forecast.pop !== undefined ? forecast.pop * 100 : 0;
-        
-            console.log(`Forecast time: ${forecast.dt_txt}`);
-            console.log(`Full forecast object: `, forecast);
-            console.log(`Rain Volume: ${rainVolume}`);
-            console.log(`Precipitation Probability: ${precipitationProbability}%`);
-        
+
             return {
-                time: forecast.dt_txt,
-                rainVolume: rainVolume,
+                date: forecastDate,
+                time: forecastHour,
                 precipitationProbability: precipitationProbability
             };
         });
-            
+
+        const upcomingRainData = rainData.filter((forecast: any) => {
+            if (forecast.date > currentDate) return true;
+            if (forecast.date === currentDate && forecast.time >= currentHour) return true;
+            return false;
+        });
+
         return {
             currentWeather: currentWeather.data,
-            rainForecast: rainData
+            rainForecast: rainData, // todas as previsões do dia
+            upcomingRainData: upcomingRainData // todas as PRÓXIMAS previsões
         };
+
     } catch (error) {
         console.error('Erro ao buscar dados climáticos', error);
     }
 }
+
+// configurar prefetch, invalidation e mutations necessárias

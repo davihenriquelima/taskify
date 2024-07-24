@@ -28,7 +28,6 @@ const WeatherSideBar = () => {
     if(isLoading){
         return <div className="h-28 w-24 absolute right-0 top-1/2">loading...</div>
     }
-
     if(isError) {
         return <div className="h-28 w-24 absolute right-0 top-1/2">{(error as Error).message}</div>;
     }
@@ -42,33 +41,28 @@ const WeatherSideBar = () => {
         const speed = weather.currentWeather.wind.speed * 3.6;
         const description = weather.currentWeather.weather[0].description;
         const cloudCover = weather.currentWeather.clouds.all;
-        const date = new Date
-        const hour = date.getHours()
 
+        const date = new Date;
+        const hour = date.getHours();
+
+        // Calcule as horas faltantes para a próxima previsão de chuva
+        const nextForecastTime = weather.upcomingRainData[0]?.time;
+    
         // Usar a previsão de chuva do primeiro item do array rainForecast
         const rainChance = weather.rainForecast[0]?.precipitationProbability;
-        let rainMessage = '';
-        let weatherIconUrl = '';
 
-        if (rainChance >= 60) {
-            rainMessage = 'Vai chover, leve seu guarda-chuva, uma capa e talvez um barco';
-            weatherIconUrl = 'images/storms.png';
-        } else if (rainChance >= 40 && rainChance < 60) {
-            rainMessage = 'Acho que vai chover hen?! leve seu guarda-chuva!';
-            weatherIconUrl = 'images/rain.png';
-        } else if (rainChance >= 30 && rainChance < 40) {
-            rainMessage = 'Pode chover. Previna-se e leve um guarda-chuva ao sair!';
-            weatherIconUrl = 'images/sun&rain.png'; 
-        } else if (rainChance >= 10 && rainChance < 30){
-            rainMessage = 'Pouca chance de chuva até o momento';
-            weatherIconUrl = 'images/sun&cloud.png';
-        } else if (rainChance < 10 && cloudCover > 10 ) {
-            rainMessage = 'Agora é sombra e água fresca';
-            weatherIconUrl = 'images/sun&cloud.png';
-        } else if (rainChance < 10 && cloudCover <= 10 ) {
-            rainMessage = hour >= 6 && hour <= 17 ? 'Ô SOOOl 😎' : 'Sem chance de chuva';
-            weatherIconUrl = 'images/sun.png';
-        }
+        const getWeatherDetails = (rainChance:number, cloudCover:number, hour:number) => {
+            const conditions = [
+                { check: rainChance >= 60, message: 'Vai chover, leve seu guarda-chuva, uma capa e talvez um barco', icon: 'images/storms.png' },
+                { check: rainChance >= 40 && rainChance < 60, message: 'Acho que vai chover hen?! leve seu guarda-chuva!', icon: 'images/rain.png' },
+                { check: rainChance >= 30 && rainChance < 40, message: 'Pode chover. Previna-se e leve um guarda-chuva ao sair!', icon: 'images/sun&rain.png' },
+                { check: rainChance >= 10 && rainChance < 30, message: 'Pouca chance de chuva até o momento', icon: 'images/sun&cloud.png' },
+                { check: rainChance < 10 && cloudCover > 10, message: 'Agora é sombra e água fresca', icon: 'images/sun&cloud.png' },
+                { check: rainChance < 10 && cloudCover <= 10, message: hour >= 6 && hour <= 17 ? 'Ô SOOOl 😎' : 'Sem chance de chuva', icon: 'images/sun.png' }
+            ];
+            return conditions.find(condition => condition.check) || { message: '', icon: '' };
+        };
+        const { message: rainMessage, icon: weatherIconUrl } = getWeatherDetails(rainChance, cloudCover, hour);        
        
         return (
             <div className={`fixed flex z-50 items-center right-0 top-1/2 transform -translate-y-1/2 ${visible ? 'translate-x-0' : `translate-x-80`} transition-transform duration-700 ease-in-out min-h-24`}>
@@ -88,7 +82,7 @@ const WeatherSideBar = () => {
                     <div className={`flex flex-col gap-1 ${themeCtx.theme === 'dark'? 'text-white/80 ' : 'text-black/70 '}`}>
                         <div className="text-sm"><strong>Sensação térmica: </strong>{sensation.toFixed(1)}°C</div>
                         <div className="text-sm"><strong>Umidade relativa do ar: </strong>{humidity.toFixed()}%</div>
-                        <div className="text-sm"><strong>Chance de chuva nas próximas 3h: </strong>{rainChance}%</div>
+                        <div className="text-sm"><strong>Chance de chuva às {nextForecastTime}: </strong>{rainChance}%</div>
                         <div className="text-sm">{rainMessage}</div>
                         <div className="text-sm"><strong>Cobertura de nuvens: </strong>{cloudCover.toFixed()}%</div>
                         <div className="text-sm">{description}</div>

@@ -17,8 +17,14 @@ export type Weather = {
         };
     };
     rainForecast: {
+        date: string,
         time: string;
-        rainVolume: number;
         precipitationProbability: number;
     }[];
+
+    upcomingRainData: {
+        date: string,
+        time: string;
+        precipitationProbability: number;
+    }[]
 }

@@ -19,6 +19,7 @@ const fetchWeather = async (): Promise<Weather | undefined> => {
             console.error('Erro ao buscar dados climáticos', apiError);
             throw new Error('Erro ao buscar dados climáticos');
         }
+
     } catch (geoError) {
         console.error('Erro ao obter localização', geoError);
         throw new Error('Erro ao obter localização');
@@ -30,8 +31,8 @@ export const useWeather = () => {
     const query = useQuery<Weather | undefined, Error>({
         queryKey: ['weather'],
         queryFn: fetchWeather,
-        staleTime: 300000, // 5 minutos
-        refetchInterval: 300000, // 5 minutos
+        staleTime: 600000, // 10 minutos
+        refetchInterval: 600000, // 10 minutos
     });
     return query;
 };
