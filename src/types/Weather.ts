@@ -21,10 +21,4 @@ export type Weather = {
         time: string;
         precipitationProbability: number;
     }[];
-
-    upcomingRainData: {
-        date: string,
-        time: string;
-        precipitationProbability: number;
-    }[]
 }

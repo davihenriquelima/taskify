@@ -1,14 +1,21 @@
 "use client";
 
 import { useTheme } from "@/contexts/ThemeContext";
-import { useWeather } from "@/utils/queries/weatherQueries";
+import { useWeather, weatherInvalidate, useWeatherPrefetch } from "@/utils/queries/weatherQueries";
 import { useEffect, useState } from "react";
 
 const WeatherSideBar = () => {
-
     const themeCtx = useTheme();
-    const { data: weather, isLoading, isError, error, refetch } = useWeather();
+
+    useWeatherPrefetch()
+
+    const handleWeatherInvalidate = () => {
+        weatherInvalidate();
+    };
+
+    const { data: weather, isLoading, isError, error, isFetching } = useWeather();
     const [visible, setVisible] = useState(false);  
+    const [updateMessageVisible, setUpdateMessageVisible] = useState(false);
 
     useEffect(()=> {
         
@@ -24,6 +31,14 @@ const WeatherSideBar = () => {
     const toggleSidebar = () => {
         setVisible(!visible);
     };
+
+    useEffect(() => {
+        if (!isFetching) {
+            setUpdateMessageVisible(true);
+            const timer = setTimeout(() => setUpdateMessageVisible(false), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [isFetching]);
 
     if(isLoading){
         return <div className="h-28 w-24 absolute right-0 top-1/2">loading...</div>
@@ -45,8 +60,7 @@ const WeatherSideBar = () => {
         const date = new Date;
         const hour = date.getHours();
 
-        // Calcule as horas faltantes para a próxima previsão de chuva
-        const nextForecastTime = weather.upcomingRainData[0]?.time;
+        const nextForecastTime = weather.rainForecast[0]?.time;
     
         // Usar a previsão de chuva do primeiro item do array rainForecast
         const rainChance = weather.rainForecast[0]?.precipitationProbability;
@@ -88,6 +102,12 @@ const WeatherSideBar = () => {
                         <div className="text-sm">{description}</div>
                         <div className="text-sm"><strong>Velocidade do vento: </strong>{speed.toFixed(1)} km/h</div>
                     </div>
+                    <button onClick={handleWeatherInvalidate}>Atualizar Clima</button>
+                    {updateMessageVisible &&
+                        <div className="flex">
+                            <span className="text-sm text-black bg-white/90 rounded-md">clima atualizado &#10003;</span>
+                        </div>
+                    }
                 </div>
             </div>
         );

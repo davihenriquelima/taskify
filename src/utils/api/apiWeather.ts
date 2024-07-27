@@ -3,62 +3,63 @@ import axios from "axios";
 const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 const currentWeatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
 const forecastWeatherUrl = 'https://api.openweathermap.org/data/2.5/forecast';
+import { Weather } from "@/types/Weather";
 
-export const getWeather = async (lat: number, lon: number, lang: string) => {
+// requisição da API usando a geolocalização do navegador
+
+export const getWeather = async (): Promise<Weather | undefined> => {
     try {
-        const currentWeather = await axios.get(currentWeatherUrl, {
-            params: {
-                lat,
-                lon,
-                appid: apiKey,
-                units: 'metric',
-                lang: lang
-            }
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
         });
-        const rainForecast = await axios.get(forecastWeatherUrl, {
-            params: {
-                lat,
-                lon,
-                appid: apiKey,
-                units: 'metric',
-                lang: lang
-            }
-        });
+
+        const { latitude, longitude } = position.coords;
+        const lang = navigator.language.slice(0, 2);
+
+        try {
+            const currentWeather = await axios.get(currentWeatherUrl, {
+                params: {
+                    lat: latitude,
+                    lon: longitude,
+                    appid: apiKey,
+                    units: 'metric',
+                    lang: lang
+                }
+            });
+            const rainForecast = await axios.get(forecastWeatherUrl, {
+                params: {
+                    lat: latitude,
+                    lon: longitude,
+                    appid: apiKey,
+                    units: 'metric',
+                    lang: lang
+                }
+            });
     
-        /*a linha new Date().toLocaleString... cria uma string no GMT de Sao Paulo representando a data 
-        e hora atual*/
-        const currentDateTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-        const currentDate = currentDateTime.split(',')[0].trim(); // pega apenas a data em currentDateTime
-        const currentHour = currentDateTime.split(',')[1].trim().split(':')[0]; // Pega apenas a hora
-
-        const rainData = rainForecast.data.list.map((forecast: any) => {
-            const forecastDateTime = new Date(forecast.dt_txt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-            const forecastDate = forecastDateTime.split(',')[0].trim(); // apenas a data na string do horário da previsão
-            const forecastHour = forecastDateTime.split(',')[1].trim().substring(0, 5); // substring pega os primeiros 5 caracteres do horário
-            const precipitationProbability = forecast.pop !== undefined ? forecast.pop * 100 : 0;
-
+            const rainData = rainForecast.data.list.map((forecast: any) => {
+                const forecastDateTime = new Date(forecast.dt_txt).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+                const forecastDate = forecastDateTime.split(',')[0].trim(); // apenas a data na string do horário da previsão
+                const forecastHour = forecastDateTime.split(',')[1].trim().substring(0, 5); // substring pega os primeiros 5 caracteres do horário
+                const precipitationProbability = forecast.pop !== undefined ? forecast.pop * 100 : 0;
+    
+                return {
+                    date: forecastDate,
+                    time: forecastHour,
+                    precipitationProbability: precipitationProbability
+                };
+            });
+    
             return {
-                date: forecastDate,
-                time: forecastHour,
-                precipitationProbability: precipitationProbability
+                currentWeather: currentWeather.data,
+                rainForecast: rainData, // todas as previsões do dia
             };
-        });
+        } catch (apiError) {
+            console.error('Erro ao buscar dados climáticos', apiError);
+            throw new Error('Erro ao buscar dados climáticos');
+        }
 
-        const upcomingRainData = rainData.filter((forecast: any) => {
-            if (forecast.date > currentDate) return true;
-            if (forecast.date === currentDate && forecast.time >= currentHour) return true;
-            return false;
-        });
-
-        return {
-            currentWeather: currentWeather.data,
-            rainForecast: rainData, // todas as previsões do dia
-            upcomingRainData: upcomingRainData // todas as PRÓXIMAS previsões
-        };
-
-    } catch (error) {
-        console.error('Erro ao buscar dados climáticos', error);
+    } catch (geoError) {
+        console.error('Erro ao obter localização', geoError);
+        throw new Error('Erro ao obter localização');
     }
 }
-
-// configurar prefetch, invalidation e mutations necessárias
